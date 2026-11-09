@@ -1,0 +1,48 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+html,body{margin:0;height:100%;background:#F4F4F2}
+body{font-family:Georgia,"Times New Roman",serif;color:#262625;display:flex;align-items:center;justify-content:center}
+.c{text-align:center;padding:14px;max-width:380px;width:100%;box-sizing:border-box}
+.l{font-style:italic;font-size:15px;opacity:.85}
+.t{font-size:44px;margin:2px 0 6px;line-height:1.1}
+.s{font-size:13px;opacity:.8;margin:2px 0 8px}
+button{font-family:inherit;font-size:14px;border:1px solid #BDBDBA;background:#FFFDFB;color:#262625;border-radius:20px;padding:6px 14px;margin:3px;cursor:pointer}
+button.on{background:#3A3A38;color:#fff;border-color:#3A3A38}
+input,select{font-family:inherit;font-size:14px;color:#262625;border:1px solid #BDBDBA;background:#FFFDFB;border-radius:12px;padding:6px 10px;width:100%;box-sizing:border-box;margin:3px 0}
+input[type=checkbox]{width:auto;accent-color:#3A3A38;margin:0 8px 0 0}
+.row{display:flex;gap:6px;align-items:center}
+.row>*{flex:1;min-width:0}
+.m{font-size:12px;letter-spacing:2px;text-transform:lowercase;opacity:.7;margin-top:8px}
+.bar{height:8px;border-radius:8px;background:#FFFDFB;border:1px solid #BDBDBA;overflow:hidden;margin:6px 0}
+.fill{height:100%;width:0;background:#3A3A38;transition:width .4s}
+ul{list-style:none;padding:0;margin:6px 0;text-align:left}
+li{padding:4px 2px;font-size:14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+li.done span{text-decoration:line-through;opacity:.55}
+lab{display:block;font-size:12px;letter-spacing:1px;text-transform:lowercase;opacity:.7;text-align:left;margin-top:4px}
+b.big{font-weight:400;font-size:22px}
+</style></head>
+<body><div class="c">
+
+<div class="l">quote compare</div>
+<ul id="u"></ul>
+<div class="m" id="m"></div>
+</div>
+<script>
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function ld(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function $(i){return document.getElementById(i)}
+function num(i){var v=parseFloat($(i).value);return isNaN(v)?0:v}
+function usd(n){return "$"+Math.round(n).toLocaleString("en-US")}
+function keep(ids,key,cb){var s=ld(key,{});ids.forEach(function(i){if(s[i]!=null)$(i).value=s[i];$(i).addEventListener("input",function(){s[i]=$(i).value;sv(key,s);cb();});$(i).addEventListener("change",function(){s[i]=$(i).value;sv(key,s);cb();});});cb();}
+
+var Q=ld("hf-quotes",[["Oak & Stone",38500,8],["Bright Build",32900,11],["Carter Remodel",41200,6]]);
+function draw(){var u=$("u");u.innerHTML="";Q.forEach(function(q,i){var li=document.createElement("li");
+[["0","48%","text"],["1","30%","number"],["2","22%","number"]].forEach(function(f){var k=+f[0],e=document.createElement("input");e.type=f[2];e.value=q[k];e.style.width=f[1];e.placeholder=["name","$","weeks"][k];
+e.oninput=function(){Q[i][k]=k?parseFloat(e.value)||0:e.value;sv("hf-quotes",Q);sum()};li.appendChild(e);});u.appendChild(li);});sum();}
+function sum(){var v=Q.filter(function(q){return q[1]>0});if(v.length<2){$("m").textContent="add at least two quotes";return;}
+var lo=v.reduce(function(a,b){return b[1]<a[1]?b:a}),hi=v.reduce(function(a,b){return b[1]>a[1]?b:a}),fa=v.filter(function(q){return q[2]>0}).reduce(function(a,b){return !a||b[2]<a[2]?b:a},null);
+var gap=Math.round((hi[1]-lo[1])/lo[1]*100);
+$("m").innerHTML="cheapest: "+lo[0]+" "+usd(lo[1])+"<br>"+(fa?"fastest: "+fa[0]+" "+fa[2]+" weeks<br>":"")+"highest is "+gap+"% above the lowest";}
+draw();
+</script></body></html>

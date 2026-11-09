@@ -1,0 +1,50 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+html,body{margin:0;height:100%;background:#F3EEF7}
+body{font-family:Georgia,"Times New Roman",serif;color:#56406E;display:flex;align-items:center;justify-content:center}
+.c{text-align:center;padding:14px;max-width:380px;width:100%;box-sizing:border-box}
+.l{font-style:italic;font-size:15px;opacity:.85}
+.t{font-size:44px;margin:2px 0 6px;line-height:1.1}
+.s{font-size:13px;opacity:.8;margin:2px 0 8px}
+button{font-family:inherit;font-size:14px;border:1px solid #C5B0D8;background:#FFFDFB;color:#56406E;border-radius:20px;padding:6px 14px;margin:3px;cursor:pointer}
+button.on{background:#9C82B8;color:#fff;border-color:#9C82B8}
+input,select{font-family:inherit;font-size:14px;color:#56406E;border:1px solid #C5B0D8;background:#FFFDFB;border-radius:12px;padding:6px 10px;width:100%;box-sizing:border-box;margin:3px 0}
+input[type=checkbox]{width:auto;accent-color:#9C82B8;margin:0 8px 0 0}
+.row{display:flex;gap:6px;align-items:center}
+.row>*{flex:1;min-width:0}
+.m{font-size:12px;letter-spacing:2px;text-transform:lowercase;opacity:.7;margin-top:8px}
+.bar{height:8px;border-radius:8px;background:#FFFDFB;border:1px solid #C5B0D8;overflow:hidden;margin:6px 0}
+.fill{height:100%;width:0;background:#9C82B8;transition:width .4s}
+ul{list-style:none;padding:0;margin:6px 0;text-align:left}
+li{padding:4px 2px;font-size:14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+li.done span{text-decoration:line-through;opacity:.55}
+lab{display:block;font-size:12px;letter-spacing:1px;text-transform:lowercase;opacity:.7;text-align:left;margin-top:4px}
+b.big{font-weight:400;font-size:22px}
+</style></head>
+<body><div class="c">
+
+<div class="l" id="l">training session</div>
+<div id="len"></div>
+<div class="t" id="t">5:00</div>
+<div><button id="go">start</button><button id="rs">reset</button></div>
+<div class="row" style="margin-top:6px"><button id="rep">+1 rep</button><button id="gd">good dog</button></div>
+<div class="m" id="m">0 reps · 0 good dogs</div>
+</div>
+<script>
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function ld(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function $(i){return document.getElementById(i)}
+function num(i){var v=parseFloat($(i).value);return isNaN(v)?0:v}
+function usd(n){return "$"+Math.round(n).toLocaleString("en-US")}
+function keep(ids,key,cb){var s=ld(key,{});ids.forEach(function(i){if(s[i]!=null)$(i).value=s[i];$(i).addEventListener("input",function(){s[i]=$(i).value;sv(key,s);cb();});$(i).addEventListener("change",function(){s[i]=$(i).value;sv(key,s);cb();});});cb();}
+
+var mins=5,left=300,iv=null,reps=0,gd=0;
+function fmt(s){return Math.floor(s/60)+":"+("0"+s%60).slice(-2)}
+function lens(){var e=$("len");e.innerHTML="";[5,10,15].forEach(function(x){var b=document.createElement("button");b.textContent=x+" min";if(x==mins)b.className="on";b.onclick=function(){if(iv)return;mins=x;left=x*60;$("t").textContent=fmt(left);lens()};e.appendChild(b);});}
+function stop(){clearInterval(iv);iv=null;$("go").textContent="start";}
+function sc(){$("m").textContent=reps+" reps · "+gd+" good dogs";}
+$("go").onclick=function(){if(iv){stop();return}$("go").textContent="pause";iv=setInterval(function(){left--;$("t").textContent=fmt(Math.max(0,left));if(left<=0){stop();$("l").textContent="session done. end on a win";left=mins*60;}},1000);};
+$("rs").onclick=function(){stop();left=mins*60;reps=0;gd=0;$("t").textContent=fmt(left);$("l").textContent="training session";sc();};
+$("rep").onclick=function(){reps++;sc()};$("gd").onclick=function(){gd++;sc()};lens();
+</script></body></html>

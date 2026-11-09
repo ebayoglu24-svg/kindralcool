@@ -1,0 +1,49 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+html,body{margin:0;height:100%;background:#F5EEE6}
+body{font-family:Georgia,"Times New Roman",serif;color:#5E4632;display:flex;align-items:center;justify-content:center}
+.c{text-align:center;padding:14px;max-width:380px;width:100%;box-sizing:border-box}
+.l{font-style:italic;font-size:15px;opacity:.85}
+.t{font-size:44px;margin:2px 0 6px;line-height:1.1}
+.s{font-size:13px;opacity:.8;margin:2px 0 8px}
+button{font-family:inherit;font-size:14px;border:1px solid #D9C2A7;background:#FFFDFB;color:#5E4632;border-radius:20px;padding:6px 14px;margin:3px;cursor:pointer}
+button.on{background:#B8977A;color:#fff;border-color:#B8977A}
+input,select{font-family:inherit;font-size:14px;color:#5E4632;border:1px solid #D9C2A7;background:#FFFDFB;border-radius:12px;padding:6px 10px;width:100%;box-sizing:border-box;margin:3px 0}
+input[type=checkbox]{width:auto;accent-color:#B8977A;margin:0 8px 0 0}
+.row{display:flex;gap:6px;align-items:center}
+.row>*{flex:1;min-width:0}
+.m{font-size:12px;letter-spacing:2px;text-transform:lowercase;opacity:.7;margin-top:8px}
+.bar{height:8px;border-radius:8px;background:#FFFDFB;border:1px solid #D9C2A7;overflow:hidden;margin:6px 0}
+.fill{height:100%;width:0;background:#B8977A;transition:width .4s}
+ul{list-style:none;padding:0;margin:6px 0;text-align:left}
+li{padding:4px 2px;font-size:14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+li.done span{text-decoration:line-through;opacity:.55}
+lab{display:block;font-size:12px;letter-spacing:1px;text-transform:lowercase;opacity:.7;text-align:left;margin-top:4px}
+b.big{font-weight:400;font-size:22px}
+</style></head>
+<body><div class="c">
+
+<div class="l">grocery quick tally</div>
+<div class="row"><input id="b" type="number" placeholder="budget" value="150"><input id="a" type="number" placeholder="add item $"></div>
+<div><button id="add">add</button><button id="clr">clear</button></div>
+<div class="t" id="t">$0</div>
+<div class="bar"><div class="fill" id="f"></div></div>
+<div class="m" id="m"></div>
+</div>
+<script>
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function ld(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function $(i){return document.getElementById(i)}
+function num(i){var v=parseFloat($(i).value);return isNaN(v)?0:v}
+function usd(n){return "$"+Math.round(n).toLocaleString("en-US")}
+function keep(ids,key,cb){var s=ld(key,{});ids.forEach(function(i){if(s[i]!=null)$(i).value=s[i];$(i).addEventListener("input",function(){s[i]=$(i).value;sv(key,s);cb();});$(i).addEventListener("change",function(){s[i]=$(i).value;sv(key,s);cb();});});cb();}
+
+var tot=ld("hf-groc",0);
+function draw(){var b=num("b");$("t").textContent=usd(tot);var p=b?Math.min(100,tot/b*100):0;$("f").style.width=p+"%";
+$("m").textContent=b?(tot<=b?usd(b-tot)+" left in your budget":usd(tot-b)+" over budget"):"set a budget";}
+keep(["b"],"hf-groc-b",draw);
+$("add").onclick=function(){tot+=num("a");$("a").value="";sv("hf-groc",tot);draw();};
+$("a").addEventListener("keydown",function(e){if(e.key=="Enter")$("add").click();});
+$("clr").onclick=function(){tot=0;sv("hf-groc",0);draw();};
+</script></body></html>

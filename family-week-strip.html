@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>family-week-strip</title>
+<style>
+html,body{margin:0;height:100%;background:#EEF3F8}
+body{font-family:Georgia,"Times New Roman",serif;color:#3F5A75;display:flex;align-items:center;justify-content:center}
+.card{background:#FFFDFB;border:2px solid #AFC5DA;border-radius:18px;padding:16px 18px;max-width:400px;width:calc(100% - 24px);box-sizing:border-box;text-align:center}
+.k{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#7F9DBB;margin-bottom:4px}
+.l{font-style:italic;font-size:17px;margin-bottom:8px}
+.t{font-size:40px;line-height:1.1;margin:6px 0 2px}
+.s{font-size:13px;opacity:.8}
+.row{display:flex;gap:8px}.row>*{flex:1;min-width:0}
+lab{display:block;font-size:11px;letter-spacing:1px;text-transform:lowercase;opacity:.75;text-align:left;margin-top:6px}
+input,select{font-family:inherit;font-size:14px;color:#3F5A75;border:1px solid #AFC5DA;background:#EEF3F8;border-radius:12px;padding:7px 10px;width:100%;box-sizing:border-box;margin-top:2px}
+.pills{margin:8px 0 2px}
+button{font-family:inherit;font-size:13px;border:1px solid #AFC5DA;background:#FFFDFB;color:#3F5A75;border-radius:20px;padding:5px 12px;margin:2px;cursor:pointer}
+button.on{background:#7F9DBB;color:#fff;border-color:#7F9DBB}
+ul{list-style:none;padding:0;margin:10px 0 0;text-align:left}
+li{display:flex;justify-content:space-between;gap:8px;padding:6px 2px;border-top:1px solid #AFC5DA;font-size:14px}
+li b{font-weight:400}
+.days{display:flex;gap:4px;justify-content:center;margin:8px 0}
+.d{flex:1;border:1px solid #AFC5DA;border-radius:12px;padding:6px 0;font-size:12px}
+.d b{display:block;font-size:18px;font-weight:400}
+.d.on{background:#7F9DBB;color:#fff;border-color:#7F9DBB}
+.m{font-size:12px;letter-spacing:1px;opacity:.75;margin-top:10px}
+</style></head><body><div class="card">
+
+<div class="k">family week</div>
+<div class="l" id="wk">this week</div>
+<div class="days" id="d"></div>
+<div class="t" id="t">0</div><div class="s" id="s">days to the weekend</div>
+</div>
+<script>
+function $(i){return document.getElementById(i)}
+function num(i){var v=parseFloat($(i).value);return isNaN(v)||v<0?0:v}
+function on(ids,f){ids.forEach(function(i){$(i).addEventListener("input",f);$(i).addEventListener("change",f)});f()}
+
+var n=new Date(),dow=n.getDay(),start=new Date(n);start.setDate(n.getDate()-((dow+6)%7));
+var N=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+for(var i=0;i<7;i++){var x=new Date(start);x.setDate(start.getDate()+i);var e=document.createElement("div");e.className="d"+(x.toDateString()==n.toDateString()?" on":"");e.innerHTML=N[i]+"<b>"+x.getDate()+"</b>";$("d").appendChild(e)}
+$("wk").textContent="Week of "+start.toLocaleDateString("en-US",{month:"short",day:"numeric"});
+var left=(6-dow)%7;if(dow==0||dow==6){$("t").textContent="Weekend";$("s").textContent="enjoy it together"}else{$("t").textContent=left;$("s").textContent=left==1?"day to the weekend":"days to the weekend"}
+</script></body></html>

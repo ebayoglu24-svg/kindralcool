@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>car-trip-fuel-cost</title>
+<style>
+html,body{margin:0;height:100%;background:#F4F4F2}
+body{font-family:Georgia,"Times New Roman",serif;color:#262625;display:flex;align-items:center;justify-content:center}
+.card{background:#FFFDFB;border:2px solid #BDBDBA;border-radius:18px;padding:16px 18px;max-width:400px;width:calc(100% - 24px);box-sizing:border-box;text-align:center}
+.k{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#3A3A38;margin-bottom:4px}
+.l{font-style:italic;font-size:17px;margin-bottom:8px}
+.t{font-size:40px;line-height:1.1;margin:6px 0 2px}
+.s{font-size:13px;opacity:.8}
+.row{display:flex;gap:8px}.row>*{flex:1;min-width:0}
+lab{display:block;font-size:11px;letter-spacing:1px;text-transform:lowercase;opacity:.75;text-align:left;margin-top:6px}
+input,select{font-family:inherit;font-size:14px;color:#262625;border:1px solid #BDBDBA;background:#F4F4F2;border-radius:12px;padding:7px 10px;width:100%;box-sizing:border-box;margin-top:2px}
+.pills{margin:8px 0 2px}
+button{font-family:inherit;font-size:13px;border:1px solid #BDBDBA;background:#FFFDFB;color:#262625;border-radius:20px;padding:5px 12px;margin:2px;cursor:pointer}
+button.on{background:#3A3A38;color:#fff;border-color:#3A3A38}
+ul{list-style:none;padding:0;margin:10px 0 0;text-align:left}
+li{display:flex;justify-content:space-between;gap:8px;padding:6px 2px;border-top:1px solid #BDBDBA;font-size:14px}
+li b{font-weight:400}
+.days{display:flex;gap:4px;justify-content:center;margin:8px 0}
+.d{flex:1;border:1px solid #BDBDBA;border-radius:12px;padding:6px 0;font-size:12px}
+.d b{display:block;font-size:18px;font-weight:400}
+.d.on{background:#3A3A38;color:#fff;border-color:#3A3A38}
+.m{font-size:12px;letter-spacing:1px;opacity:.75;margin-top:10px}
+</style></head><body><div class="card">
+
+<div class="k">trip cost</div>
+<div class="l">what will this drive cost?</div>
+<div class="pills" id="f"></div>
+<div class="row"><div><lab>trip miles</lab><input id="mi" type="number" value="240"></div><div><lab id="el">miles per gallon</lab><input id="ef" type="number" value="28"></div></div>
+<lab id="pl">price per gallon</lab><input id="p" type="number" step="0.01" value="3.49">
+<div class="t" id="t">$0</div><div class="s" id="s"></div>
+</div>
+<script>
+function $(i){return document.getElementById(i)}
+function num(i){var v=parseFloat($(i).value);return isNaN(v)||v<0?0:v}
+function on(ids,f){ids.forEach(function(i){$(i).addEventListener("input",f);$(i).addEventListener("change",f)});f()}
+
+var ev=false;
+function draw(){$("f").innerHTML="";[["Gas",false],["Electric",true]].forEach(function(x){var b=document.createElement("button");b.textContent=x[0];if(x[1]==ev)b.className="on";b.onclick=function(){ev=x[1];$("ef").value=ev?3.5:28;$("p").value=ev?0.17:3.49;draw()};$("f").appendChild(b)});
+$("el").textContent=ev?"miles per kWh":"miles per gallon";$("pl").textContent=ev?"price per kWh":"price per gallon";
+var e=num("ef");if(!e){$("t").textContent="-";$("s").textContent="";return}var u=num("mi")/e,c=u*num("p");
+$("t").textContent="$"+c.toFixed(2);$("s").textContent=u.toFixed(1)+(ev?" kWh":" gallons")+" · $"+(num("mi")?(c/num("mi")).toFixed(2):"0.00")+" a mile"}
+on(["mi","ef","p"],draw);
+</script></body></html>

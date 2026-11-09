@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>home-month-at-home</title>
+<style>
+html,body{margin:0;height:100%;background:#F5EEE6}
+body{font-family:Georgia,"Times New Roman",serif;color:#5E4632;display:flex;align-items:center;justify-content:center}
+.card{background:#FFFDFB;border:2px solid #D9C2A7;border-radius:18px;padding:16px 18px;max-width:400px;width:calc(100% - 24px);box-sizing:border-box;text-align:center}
+.k{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#B8977A;margin-bottom:4px}
+.l{font-style:italic;font-size:17px;margin-bottom:8px}
+.t{font-size:40px;line-height:1.1;margin:6px 0 2px}
+.s{font-size:13px;opacity:.8}
+.row{display:flex;gap:8px}.row>*{flex:1;min-width:0}
+lab{display:block;font-size:11px;letter-spacing:1px;text-transform:lowercase;opacity:.75;text-align:left;margin-top:6px}
+input,select{font-family:inherit;font-size:14px;color:#5E4632;border:1px solid #D9C2A7;background:#F5EEE6;border-radius:12px;padding:7px 10px;width:100%;box-sizing:border-box;margin-top:2px}
+.pills{margin:8px 0 2px}
+button{font-family:inherit;font-size:13px;border:1px solid #D9C2A7;background:#FFFDFB;color:#5E4632;border-radius:20px;padding:5px 12px;margin:2px;cursor:pointer}
+button.on{background:#B8977A;color:#fff;border-color:#B8977A}
+ul{list-style:none;padding:0;margin:10px 0 0;text-align:left}
+li{display:flex;justify-content:space-between;gap:8px;padding:6px 2px;border-top:1px solid #D9C2A7;font-size:14px}
+li b{font-weight:400}
+.days{display:flex;gap:4px;justify-content:center;margin:8px 0}
+.d{flex:1;border:1px solid #D9C2A7;border-radius:12px;padding:6px 0;font-size:12px}
+.d b{display:block;font-size:18px;font-weight:400}
+.d.on{background:#B8977A;color:#fff;border-color:#B8977A}
+.m{font-size:12px;letter-spacing:1px;opacity:.75;margin-top:10px}
+</style></head><body><div class="card">
+
+<div class="k">this month at home</div>
+<div class="l" id="season">season</div>
+<ul id="u"></ul>
+<div class="m">a starting list for every home</div>
+</div>
+<script>
+function $(i){return document.getElementById(i)}
+function num(i){var v=parseFloat($(i).value);return isNaN(v)||v<0?0:v}
+function on(ids,f){ids.forEach(function(i){$(i).addEventListener("input",f);$(i).addEventListener("change",f)});f()}
+
+var M=[["test smoke alarms","check the furnace filter","clear snow from vents","look for drafts","check pipes in cold spots"],
+["test carbon monoxide alarms","clean the range hood filter","vacuum fridge coils","check caulk in tubs","inspect the attic for leaks"],
+["clean gutters","check the sump pump","service the AC","wash windows","check the roof after storms"],
+["test smoke alarms","clean the dryer vent","check outdoor faucets","reseal the deck","flush the water heater"],
+["service the lawn mower","check window screens","clean ceiling fans","inspect the driveway","check the sprinklers"],
+["clean the grill","check the AC filter","trim trees near the roof","wash outdoor furniture","check door seals"],
+["check the AC filter","clean the dishwasher filter","look for pests","check the garage door","refresh the caulk"],
+["deep clean the fridge","check smoke alarms","wash the siding","clean window tracks","check the water softener"],
+["clean gutters","test the heat before you need it","drain the outdoor hoses","check the chimney","seal gaps around windows"],
+["swap the furnace filter","rake and clear drains","check weather stripping","test smoke alarms","winterize the sprinklers"],
+["test smoke alarms","clean gutters","swap the furnace filter","check the fireplace","stock salt and a shovel"],
+["check holiday lights before hanging","keep the furnace filter fresh","check for ice dams","clear the dryer vent","test carbon monoxide alarms"]];
+var n=new Date(),m=n.getMonth(),S=["Winter","Winter","Spring","Spring","Spring","Summer","Summer","Summer","Fall","Fall","Fall","Winter"];
+$("season").textContent=n.toLocaleDateString("en-US",{month:"long"})+" · "+S[m];
+M[m].forEach(function(x){var li=document.createElement("li");li.innerHTML="<span>"+x+"</span><b>&#9675;</b>";$("u").appendChild(li)});
+</script></body></html>

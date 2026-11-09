@@ -1,0 +1,45 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+html,body{margin:0;height:100%;background:#F4F4F2}
+body{font-family:Georgia,"Times New Roman",serif;color:#262625;display:flex;align-items:center;justify-content:center}
+.c{text-align:center;padding:14px;max-width:380px;width:100%;box-sizing:border-box}
+.l{font-style:italic;font-size:15px;opacity:.85}
+.t{font-size:44px;margin:2px 0 6px;line-height:1.1}
+.s{font-size:13px;opacity:.8;margin:2px 0 8px}
+button{font-family:inherit;font-size:14px;border:1px solid #BDBDBA;background:#FFFDFB;color:#262625;border-radius:20px;padding:6px 14px;margin:3px;cursor:pointer}
+button.on{background:#3A3A38;color:#fff;border-color:#3A3A38}
+input,select{font-family:inherit;font-size:14px;color:#262625;border:1px solid #BDBDBA;background:#FFFDFB;border-radius:12px;padding:6px 10px;width:100%;box-sizing:border-box;margin:3px 0}
+input[type=checkbox]{width:auto;accent-color:#3A3A38;margin:0 8px 0 0}
+.row{display:flex;gap:6px;align-items:center}
+.row>*{flex:1;min-width:0}
+.m{font-size:12px;letter-spacing:2px;text-transform:lowercase;opacity:.7;margin-top:8px}
+.bar{height:8px;border-radius:8px;background:#FFFDFB;border:1px solid #BDBDBA;overflow:hidden;margin:6px 0}
+.fill{height:100%;width:0;background:#3A3A38;transition:width .4s}
+ul{list-style:none;padding:0;margin:6px 0;text-align:left}
+li{padding:4px 2px;font-size:14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+li.done span{text-decoration:line-through;opacity:.55}
+lab{display:block;font-size:12px;letter-spacing:1px;text-transform:lowercase;opacity:.7;text-align:left;margin-top:4px}
+b.big{font-weight:400;font-size:22px}
+</style></head>
+<body><div class="c">
+
+<div class="l">budget buffer</div>
+<lab>total budget</lab><input id="b" type="number" value="40000">
+<div id="k"></div>
+<div class="t" id="t">$0</div><div class="s">safe to plan for</div>
+<div class="m" id="m"></div>
+</div>
+<script>
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function ld(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function $(i){return document.getElementById(i)}
+function num(i){var v=parseFloat($(i).value);return isNaN(v)?0:v}
+function usd(n){return "$"+Math.round(n).toLocaleString("en-US")}
+function keep(ids,key,cb){var s=ld(key,{});ids.forEach(function(i){if(s[i]!=null)$(i).value=s[i];$(i).addEventListener("input",function(){s[i]=$(i).value;sv(key,s);cb();});$(i).addEventListener("change",function(){s[i]=$(i).value;sv(key,s);cb();});});cb();}
+
+var pct=ld("hf-buf-p",15);
+function draw(){var e=$("k");e.innerHTML="";[10,15,20].forEach(function(x){var b=document.createElement("button");b.textContent=x+"% buffer";if(x==pct)b.className="on";b.onclick=function(){pct=x;sv("hf-buf-p",x);draw()};e.appendChild(b);});
+var b=num("b"),hold=b*pct/100;$("t").textContent=usd(b-hold);$("m").textContent="hold back "+usd(hold)+" for surprises";}
+keep(["b"],"hf-buf-b",draw);
+</script></body></html>

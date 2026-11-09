@@ -1,0 +1,51 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+html,body{margin:0;height:100%;background:#F5EEE6}
+body{font-family:Georgia,"Times New Roman",serif;color:#5E4632;display:flex;align-items:center;justify-content:center}
+.c{text-align:center;padding:14px;max-width:380px;width:100%;box-sizing:border-box}
+.l{font-style:italic;font-size:15px;opacity:.85}
+.t{font-size:44px;margin:2px 0 6px;line-height:1.1}
+.s{font-size:13px;opacity:.8;margin:2px 0 8px}
+button{font-family:inherit;font-size:14px;border:1px solid #D9C2A7;background:#FFFDFB;color:#5E4632;border-radius:20px;padding:6px 14px;margin:3px;cursor:pointer}
+button.on{background:#B8977A;color:#fff;border-color:#B8977A}
+input,select{font-family:inherit;font-size:14px;color:#5E4632;border:1px solid #D9C2A7;background:#FFFDFB;border-radius:12px;padding:6px 10px;width:100%;box-sizing:border-box;margin:3px 0}
+input[type=checkbox]{width:auto;accent-color:#B8977A;margin:0 8px 0 0}
+.row{display:flex;gap:6px;align-items:center}
+.row>*{flex:1;min-width:0}
+.m{font-size:12px;letter-spacing:2px;text-transform:lowercase;opacity:.7;margin-top:8px}
+.bar{height:8px;border-radius:8px;background:#FFFDFB;border:1px solid #D9C2A7;overflow:hidden;margin:6px 0}
+.fill{height:100%;width:0;background:#B8977A;transition:width .4s}
+ul{list-style:none;padding:0;margin:6px 0;text-align:left}
+li{padding:4px 2px;font-size:14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+li.done span{text-decoration:line-through;opacity:.55}
+lab{display:block;font-size:12px;letter-spacing:1px;text-transform:lowercase;opacity:.7;text-align:left;margin-top:4px}
+b.big{font-weight:400;font-size:22px}
+</style></head>
+<body><div class="c">
+
+<div class="l">seasonal checklist</div>
+<div id="se"></div><div id="ho"></div>
+<ul id="u"></ul>
+<div class="m" id="m">tick what you have done</div>
+</div>
+<script>
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function ld(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function $(i){return document.getElementById(i)}
+function num(i){var v=parseFloat($(i).value);return isNaN(v)?0:v}
+function usd(n){return "$"+Math.round(n).toLocaleString("en-US")}
+function keep(ids,key,cb){var s=ld(key,{});ids.forEach(function(i){if(s[i]!=null)$(i).value=s[i];$(i).addEventListener("input",function(){s[i]=$(i).value;sv(key,s);cb();});$(i).addEventListener("change",function(){s[i]=$(i).value;sv(key,s);cb();});});cb();}
+
+var L={"spring":{"house":["clean gutters","service the AC","check roof and siding","wash windows","test sprinklers","deep clean carpets"],"apartment":["wash windows","deep clean the fridge","swap winter clothes","clean AC vents","dust ceiling fans","declutter one closet"]},
+"summer":{"house":["clean the grill","check deck and fence","replace air filter","clean the dryer vent","trim trees and shrubs","check for pests"],"apartment":["replace air filter","clean the dryer vent","defrost the freezer","wash shower curtain","clean behind appliances","check smoke detectors"]},
+"fall":{"house":["clean gutters again","drain outdoor hoses","service the furnace","seal windows and doors","rake and mulch","test smoke detectors"],"apartment":["service the heater","check window seals","flip the mattress","clean the oven","test smoke detectors","deep clean the bathroom"]},
+"winter":{"house":["check for ice dams","stock salt and shovel","replace air filter","test carbon monoxide alarm","check pipes for drafts","clean humidifier"],"apartment":["clean humidifier","replace air filter","declutter the pantry","wash bedding and pillows","clean light fixtures","check outlets and cords"]}};
+var mo=new Date().getMonth(),se=ld("hf-sea-s",mo<2||mo==11?"winter":mo<5?"spring":mo<8?"summer":"fall"),ho=ld("hf-sea-h","house"),dn={};
+function btns(id,arr,cur,set){var e=$(id);e.innerHTML="";arr.forEach(function(x){var b=document.createElement("button");b.textContent=x;if(x==cur)b.className="on";b.onclick=function(){set(x);draw()};e.appendChild(b);});}
+function draw(){btns("se",["spring","summer","fall","winter"],se,function(x){se=x;sv("hf-sea-s",x);dn={}});btns("ho",["house","apartment"],ho,function(x){ho=x;sv("hf-sea-h",x);dn={}});
+var u=$("u");u.innerHTML="";var c=0;L[se][ho].forEach(function(x,i){var li=document.createElement("li");li.style.justifyContent="flex-start";if(dn[i]){li.className="done";c++;}
+var cb=document.createElement("input");cb.type="checkbox";cb.checked=!!dn[i];cb.onchange=function(){dn[i]=cb.checked;draw()};var s=document.createElement("span");s.textContent=x;li.appendChild(cb);li.appendChild(s);u.appendChild(li);});
+$("m").textContent=c==6?"all done. your home thanks you":c+" of 6 done · copy any into Quick Add";}
+draw();
+</script></body></html>

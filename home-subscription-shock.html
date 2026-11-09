@@ -1,0 +1,50 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+html,body{margin:0;height:100%;background:#F5EEE6}
+body{font-family:Georgia,"Times New Roman",serif;color:#5E4632;display:flex;align-items:center;justify-content:center}
+.c{text-align:center;padding:14px;max-width:380px;width:100%;box-sizing:border-box}
+.l{font-style:italic;font-size:15px;opacity:.85}
+.t{font-size:44px;margin:2px 0 6px;line-height:1.1}
+.s{font-size:13px;opacity:.8;margin:2px 0 8px}
+button{font-family:inherit;font-size:14px;border:1px solid #D9C2A7;background:#FFFDFB;color:#5E4632;border-radius:20px;padding:6px 14px;margin:3px;cursor:pointer}
+button.on{background:#B8977A;color:#fff;border-color:#B8977A}
+input,select{font-family:inherit;font-size:14px;color:#5E4632;border:1px solid #D9C2A7;background:#FFFDFB;border-radius:12px;padding:6px 10px;width:100%;box-sizing:border-box;margin:3px 0}
+input[type=checkbox]{width:auto;accent-color:#B8977A;margin:0 8px 0 0}
+.row{display:flex;gap:6px;align-items:center}
+.row>*{flex:1;min-width:0}
+.m{font-size:12px;letter-spacing:2px;text-transform:lowercase;opacity:.7;margin-top:8px}
+.bar{height:8px;border-radius:8px;background:#FFFDFB;border:1px solid #D9C2A7;overflow:hidden;margin:6px 0}
+.fill{height:100%;width:0;background:#B8977A;transition:width .4s}
+ul{list-style:none;padding:0;margin:6px 0;text-align:left}
+li{padding:4px 2px;font-size:14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+li.done span{text-decoration:line-through;opacity:.55}
+lab{display:block;font-size:12px;letter-spacing:1px;text-transform:lowercase;opacity:.7;text-align:left;margin-top:4px}
+b.big{font-weight:400;font-size:22px}
+</style></head>
+<body><div class="c">
+
+<div class="l">subscription shock</div>
+<ul id="u"></ul>
+<div><button id="add">add one</button></div>
+<div class="t" id="t">$0</div><div class="s" id="s">a month</div>
+<div class="m" id="m"></div>
+</div>
+<script>
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function ld(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function $(i){return document.getElementById(i)}
+function num(i){var v=parseFloat($(i).value);return isNaN(v)?0:v}
+function usd(n){return "$"+Math.round(n).toLocaleString("en-US")}
+function keep(ids,key,cb){var s=ld(key,{});ids.forEach(function(i){if(s[i]!=null)$(i).value=s[i];$(i).addEventListener("input",function(){s[i]=$(i).value;sv(key,s);cb();});$(i).addEventListener("change",function(){s[i]=$(i).value;sv(key,s);cb();});});cb();}
+
+var S=ld("hf-subs",[["Streaming",15.99],["Music",10.99],["Cloud storage",2.99],["Gym",39],["News",8]]);
+function draw(){var u=$("u");u.innerHTML="";var t=0;S.forEach(function(x,i){t+=x[1]||0;var li=document.createElement("li");
+var a=document.createElement("input");a.value=x[0];a.style.width="58%";a.oninput=function(){S[i][0]=a.value;sv("hf-subs",S);top3()};
+var b=document.createElement("input");b.type="number";b.step="0.01";b.value=x[1];b.style.width="28%";b.oninput=function(){S[i][1]=parseFloat(b.value)||0;sv("hf-subs",S);tot()};
+var r=document.createElement("button");r.textContent="x";r.style.padding="2px 9px";r.onclick=function(){S.splice(i,1);sv("hf-subs",S);draw()};
+li.appendChild(a);li.appendChild(b);li.appendChild(r);u.appendChild(li);});tot();}
+function tot(){var t=S.reduce(function(a,x){return a+(x[1]||0)},0);$("t").textContent="$"+t.toFixed(2);$("s").textContent="a month · $"+Math.round(t*12).toLocaleString("en-US")+" a year";top3();}
+function top3(){var c=S.slice().sort(function(a,b){return (b[1]||0)-(a[1]||0)}).slice(0,3).map(function(x){return x[0]});$("m").textContent=c.length?"biggest: "+c.join(", "):"";}
+$("add").onclick=function(){S.push(["New",0]);sv("hf-subs",S);draw();};draw();
+</script></body></html>

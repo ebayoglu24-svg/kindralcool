@@ -1,0 +1,44 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+html,body{margin:0;height:100%;background:#EEF3F8}
+body{font-family:Georgia,"Times New Roman",serif;color:#3F5A75;display:flex;align-items:center;justify-content:center}
+.c{text-align:center;padding:14px;max-width:380px;width:100%;box-sizing:border-box}
+.l{font-style:italic;font-size:15px;opacity:.85}
+.t{font-size:44px;margin:2px 0 6px;line-height:1.1}
+.s{font-size:13px;opacity:.8;margin:2px 0 8px}
+button{font-family:inherit;font-size:14px;border:1px solid #AFC5DA;background:#FFFDFB;color:#3F5A75;border-radius:20px;padding:6px 14px;margin:3px;cursor:pointer}
+button.on{background:#7F9DBB;color:#fff;border-color:#7F9DBB}
+input,select{font-family:inherit;font-size:14px;color:#3F5A75;border:1px solid #AFC5DA;background:#FFFDFB;border-radius:12px;padding:6px 10px;width:100%;box-sizing:border-box;margin:3px 0}
+input[type=checkbox]{width:auto;accent-color:#7F9DBB;margin:0 8px 0 0}
+.row{display:flex;gap:6px;align-items:center}
+.row>*{flex:1;min-width:0}
+.m{font-size:12px;letter-spacing:2px;text-transform:lowercase;opacity:.7;margin-top:8px}
+.bar{height:8px;border-radius:8px;background:#FFFDFB;border:1px solid #AFC5DA;overflow:hidden;margin:6px 0}
+.fill{height:100%;width:0;background:#7F9DBB;transition:width .4s}
+ul{list-style:none;padding:0;margin:6px 0;text-align:left}
+li{padding:4px 2px;font-size:14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+li.done span{text-decoration:line-through;opacity:.55}
+lab{display:block;font-size:12px;letter-spacing:1px;text-transform:lowercase;opacity:.7;text-align:left;margin-top:4px}
+b.big{font-weight:400;font-size:22px}
+</style></head>
+<body><div class="c">
+
+<div class="l">leave-by calculator</div>
+<div class="row"><div><lab>appointment time</lab><input id="a" type="time" value="10:30"></div><div><lab>drive (min)</lab><input id="d" type="number" value="25"></div></div>
+<lab>parking and check-in (min)</lab><input id="b" type="number" value="15">
+<div class="t" id="t">-</div><div class="s">leave by</div>
+<div class="m" id="m"></div>
+</div>
+<script>
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function ld(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function $(i){return document.getElementById(i)}
+function num(i){var v=parseFloat($(i).value);return isNaN(v)?0:v}
+function usd(n){return "$"+Math.round(n).toLocaleString("en-US")}
+function keep(ids,key,cb){var s=ld(key,{});ids.forEach(function(i){if(s[i]!=null)$(i).value=s[i];$(i).addEventListener("input",function(){s[i]=$(i).value;sv(key,s);cb();});$(i).addEventListener("change",function(){s[i]=$(i).value;sv(key,s);cb();});});cb();}
+
+keep(["a","d","b"],"hf-leave",function(){var p=($("a").value||"").split(":");if(p.length<2){$("t").textContent="-";return;}
+var m=parseInt(p[0])*60+parseInt(p[1])-num("d")-num("b");m=((m%1440)+1440)%1440;var h=Math.floor(m/60),mm=m%60,ap=h>=12?"PM":"AM",h12=h%12||12;
+$("t").textContent=h12+":"+("0"+mm).slice(-2)+" "+ap;$("m").textContent="bring the insurance card and your questions";});
+</script></body></html>
